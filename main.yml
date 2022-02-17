@@ -15,7 +15,13 @@
         cache_valid_time: 3600
       when:
         - ansible_facts.os_family == "Debian"
-
+    
+    - name: Ensure dnf cache is up to date.
+      ansible.builtin.dnf:
+        update_cache: true
+      when:
+        - ansible_facts.os_family == "RedHat"
+    
     - name: Ensure pacman cache is up to date
       community.general.pacman:
         update_cache: true
