@@ -1,4 +1,19 @@
 ---
+# When a different server should listen on port 53 (i.e. dnsmasq) we need to disable the default
+# systemd-resolved stub resolver on 127.0.0.53:53 on the loopback interface
+- name: disable stub listener on port 53
+  ansible.builtin.copy:
+    src: files/stub-listener.conf 
+    dest: "/etc/systemd/resolved.conf.d/"
+    mode: '0644'
+    owner: root
+    group: root
+    backup: yes
+  become: true
+  notify: Restart resolved
+  when:
+    - ansible_facts.os_family == "RedHat"
+
 - name: Create Pi-hole folder on Pi.
   ansible.builtin.file:
     path: "{{ config_dir }}/pi-hole"
